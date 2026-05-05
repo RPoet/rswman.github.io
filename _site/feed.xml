@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://0.0.0.0:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/" rel="alternate" type="text/html" /><updated>2025-12-27T02:26:09+00:00</updated><id>http://0.0.0.0:4000/feed.xml</id><title type="html">My Jekyll Site</title><subtitle>Graphics &amp; Rendering Notes</subtitle><entry><title type="html">Introduction to CPU cycle.</title><link href="http://0.0.0.0:4000/2025/12/20/hello.html" rel="alternate" type="text/html" title="Introduction to CPU cycle." /><published>2025-12-20T00:00:00+00:00</published><updated>2025-12-20T00:00:00+00:00</updated><id>http://0.0.0.0:4000/2025/12/20/hello</id><content type="html" xml:base="http://0.0.0.0:4000/2025/12/20/hello.html"><![CDATA[<p class="lead"><strong>CPU Cycle에 대해 SW관련한 지식만 갖고 있다면 모르는 경우가 더러 있다. 내가 그 경우여서 좀 확인하고 기록하자는 차원에서 남긴다.</strong></p>
+
+<p class="warning"><strong>WARNING</strong> : 틀릴 수 있다. 어딘가에서 적당히 2차 검증하라. 틀린 내용있다면 메일을 달라. rpoet@naver.com</p>
+
+<p class="note">Cycle이란 먼저 CPU내에 있는 이벤트라고 생각해도 좋다. 특정 전압이 들어오면서 신호가 들어오고 그리고 다시 꺼지는데 이 켜지고 꺼지고 까지의 기간을 Cycle or Tick이라고 한다.</p>
+
+<p class="note">좋다. 여기까진 명료하다. 궁금했던 것은 이 Cycle 동안에 CPU는 무언가 정해진 Pipeline을 타는가 였다. Software를 작성하는 사람으로서 말하자면 Cycle을 처음 들었을 때, 하나의 함수로써 받아들여졌다. 그래서 이 Cycle() 내부가 어떻게 흘러가는가가 궁금해서 절대 깊지 않은 선에서만 알아보았다.</p>
+
+<p class="lead"><strong>Cycle?</strong></p>
+
+<p class="note">Cycle이 시작되면 크게 3단계로 나뉜다. 시작(Rising Edge), 중간(Propagation Delay), 끝(Setup Time)으로 나뉘며, 각각이 일정 수준의 역할을 담당해주고 있다.</p>
+
+<p class="note"><strong>Rising Edge</strong></p>
+
+<p class="note">Rising Edge에선 State Capture가 발생한다. 이 때, 레지스터는 입력을 받을 준비를 한다. 뭐라고 하드웨어적인 설명이 꽤 많은데 내 이해는 이렇다. 이 순간에 Event Polling을 하고 각각 레지스터에 들어와야 할 값을 Capture를 한다. 그리고 이 Cycle에 이 Data를 쓸 준비가 된 것이다.</p>
+
+<p class="note"><strong>Propagation Delay</strong></p>
+
+<p class="note">다음 단계로는 Cycle 중간 단계로 Propagation Delay단계가 있다. 여기서 여러 회로를 타면서 레지스터 내 값이 변한다 또는 전압이 변한다라고 할 수 있겠다. 이 결과를 최종 출력으로써 다음 레지스터 입력으로 보낸다. 여기서 아무래도 회로들을 통과해야 하기 때문에 지연시간이 발생한다. 그래서 Propagation Delay라는 이름이 붙었다.</p>
+
+<p class="note"><strong>Setup Time</strong></p>
+
+<p>회로를 통과한 신호를 다음 레지스터 앞에 도착시켜 대기하고 있는 상태다. 이 데이터가 다음 Cycle에서 읽어들이는 레지스터의 입력이 된다.</p>
+
+<p class="note">만약 물리적으로 회로가 너무 복잡해서 이 Tick End 시점인 Setup Time까지 전기가 도착하지 못했다면? 이게 이제 연산 실패로 이어진다고 한다. 어떤 코드가 이런 영향을 미칠 수 있을까?를 고민했지만 이러면 코드 주저사로 빠지는 길일 것 같다.</p>
+
+<p class="note"><strong>Final</strong></p>
+<p class="note">어느정도 한 Cycle이 무엇인가에 대한 개념을 잡는 것엔 꽤 좋은 이야기가 됐다고 생각한다. 이를 시작으로 계속해서 하나씩 개념을 공고히 해나가보자.</p>]]></content><author><name></name></author><category term="CPU Cycle" /><summary type="html"><![CDATA[CPU Cycle에 대해 SW관련한 지식만 갖고 있다면 모르는 경우가 더러 있다. 내가 그 경우여서 좀 확인하고 기록하자는 차원에서 남긴다.]]></summary></entry></feed>

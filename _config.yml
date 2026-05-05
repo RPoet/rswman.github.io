@@ -1,0 +1,6 @@
+title: rswman
+description: Graphics Rendering Engineer
+url: "https://rpoet.github.io"
+baseurl: "/rswman.github.io"
+theme: minima
+markdown: kramdown

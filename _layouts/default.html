@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% assign meta_description = page.description | default: page.excerpt | default: site.description | strip_html | strip_newlines | normalize_whitespace | truncate: 160 %}
+  <meta name="description" content="{{ meta_description | escape }}">
+  {% if page.noindex %}
+  <meta name="robots" content="noindex">
+  {% endif %}
+  {% if page.keywords %}
+  <meta name="keywords" content="{{ page.keywords | escape }}">
+  {% endif %}
+  <meta property="og:title" content="{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}">
+  <meta property="og:description" content="{{ meta_description | escape }}">
+  <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}">
+  <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101114;
+      --panel: #181a20;
+      --panel-2: #20232b;
+      --ink: #f3efe5;
+      --muted: #aaa399;
+      --accent: #e0a84f;
+      --accent-2: #67c6b1;
+      --line: #31343d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+      line-height: 1.75;
+      background: var(--bg);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.22em;
+    }
+
+    .site-shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 28px 22px 72px;
+    }
+
+    .site-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 54px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .site-title {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .site-description {
+      max-width: 28rem;
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .site-nav a {
+      display: inline-block;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    .site-nav a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(224, 168, 79, 0.08);
+    }
+
+    .page-card {
+      padding: 0;
+    }
+
+    h1, h2, h3 {
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-size: clamp(2.5rem, 5vw, 4.35rem);
+      font-weight: 850;
+    }
+
+    h2 {
+      margin-top: 46px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--accent-2);
+      font-size: 1.18rem;
+      font-weight: 760;
+    }
+
+    h3 {
+      margin-top: 32px;
+      color: var(--ink);
+      font-size: 1.05rem;
+    }
+
+    p {
+      margin: 0 0 1.15rem;
+    }
+
+    .lead {
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    .home-kicker {
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .post-list,
+    .link-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .post-list li,
+    .link-list li {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .post-list a,
+    .link-list a {
+      color: var(--ink);
+      font-size: 1.12rem;
+      font-weight: 760;
+      text-decoration: none;
+    }
+
+    .post-list a:hover,
+    .link-list a:hover {
+      color: var(--accent);
+    }
+
+    .post-date,
+    .link-note {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 24px 0 10px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .stat-value {
+      margin-top: 8px;
+      color: var(--ink);
+      font-size: 2rem;
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .stat-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .post-meta {
+      margin-top: -6px;
+      margin-bottom: 34px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    blockquote {
+      margin: 26px 0;
+      padding: 2px 0 2px 18px;
+      border-left: 3px solid var(--accent);
+      color: #ddd6c9;
+      font-size: 1.08rem;
+      font-weight: 650;
+    }
+
+    code {
+      padding: 0.12rem 0.38rem;
+      border-radius: 6px;
+      background: var(--panel-2);
+      color: #f6dca8;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      font-size: 0.92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+
+    ul, ol {
+      padding-left: 1.3rem;
+    }
+
+    li {
+      margin: 0.22rem 0;
+    }
+
+    @media (max-width: 720px) {
+      .site-shell {
+        padding: 20px 16px 48px;
+      }
+
+      .site-header {
+        display: block;
+        margin-bottom: 36px;
+      }
+
+      .site-nav {
+        justify-content: flex-start;
+        margin-top: 18px;
+      }
+
+      .post-list li,
+      .link-list li {
+        display: block;
+      }
+
+      .post-date,
+      .link-note {
+        display: block;
+        margin-top: 5px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script>
+    (function () {
+      if (location.hostname !== "rpoet.github.io") return;
+
+      var namespace = "rpoet-rswman-github-io";
+      var api = "https://api.counterapi.dev/v1/" + namespace + "/";
+      var today = new Date().toISOString().slice(0, 10);
+      var path = location.pathname.replace(/^\/rswman\.github\.io\/?/, "/");
+      var pageKey = "page-" + (path || "/")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")
+        .slice(0, 90);
+
+      if (pageKey === "page-") pageKey = "page-home";
+
+      function count(name) {
+        var img = new Image();
+        img.referrerPolicy = "no-referrer-when-downgrade";
+        img.src = api + encodeURIComponent(name) + "/up/?cache=" + Date.now() + Math.random();
+      }
+
+      count("site-views");
+      count("views-" + today);
+      count(pageKey);
+
+      try {
+        if (!localStorage.getItem("rswman-visitor-total")) {
+          localStorage.setItem("rswman-visitor-total", "1");
+          count("site-visitors");
+        }
+
+        var dailyKey = "rswman-visitor-" + today;
+        if (!localStorage.getItem(dailyKey)) {
+          localStorage.setItem(dailyKey, "1");
+          count("visitors-" + today);
+        }
+      } catch (e) {
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <h1 class="site-title">{{ site.title }}</h1>
+      <p class="site-description">{{ site.description }}</p>
+      <nav class="site-nav">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <a href="{{ '/articles.html' | relative_url }}">Articles</a>
+        <a href="{{ '/stats.html' | relative_url }}">Stats</a>
+        <a href="{{ '/work.html' | relative_url }}">Work Board</a>
+      </nav>
+    </header>
+    <main class="page-card">
+      {{ content }}
+    </main>
+  </div>
+</body>
+</html>
