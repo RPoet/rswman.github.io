@@ -303,6 +303,8 @@
       var api = "https://api.counterapi.dev/v1/" + namespace + "/";
       var today = new Date().toISOString().slice(0, 10);
       var path = location.pathname.replace(/^\/rswman\.github\.io\/?/, "/");
+      if (/^\/stats(?:\.html)?\/?$/.test(path)) return;
+
       var pageKey = "page-" + (path || "/")
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
@@ -310,6 +312,7 @@
         .slice(0, 90);
 
       if (pageKey === "page-") pageKey = "page-home";
+      var viewCooldownMs = 30 * 60 * 1000;
 
       function count(name) {
         var img = new Image();
@@ -317,23 +320,61 @@
         img.src = api + encodeURIComponent(name) + "/up/?cache=" + Date.now() + Math.random();
       }
 
-      count("site-views");
-      count("views-" + today);
-      count(pageKey);
+      function shouldCount(scope) {
+        var key = "rswman-view-" + today + "-" + scope;
+        var now = Date.now();
 
-      try {
-        if (!localStorage.getItem("rswman-visitor-total")) {
-          localStorage.setItem("rswman-visitor-total", "1");
-          count("site-visitors");
+        try {
+          var previous = Number(localStorage.getItem(key) || "0");
+          if (previous && now - previous < viewCooldownMs) return false;
+          localStorage.setItem(key, String(now));
+          return true;
+        } catch (e) {
         }
 
-        var dailyKey = "rswman-visitor-" + today;
-        if (!localStorage.getItem(dailyKey)) {
-          localStorage.setItem(dailyKey, "1");
-          count("visitors-" + today);
+        try {
+          if (sessionStorage.getItem(key)) return false;
+          sessionStorage.setItem(key, String(now));
+          return true;
+        } catch (e) {
         }
-      } catch (e) {
+
+        return true;
       }
+
+      function recordVisit() {
+        if (shouldCount("site")) {
+          count("site-views");
+          count("views-" + today);
+        }
+
+        if (shouldCount(pageKey)) count(pageKey);
+
+        try {
+          if (!localStorage.getItem("rswman-visitor-total")) {
+            localStorage.setItem("rswman-visitor-total", "1");
+            count("site-visitors");
+          }
+
+          var dailyKey = "rswman-visitor-" + today;
+          if (!localStorage.getItem(dailyKey)) {
+            localStorage.setItem(dailyKey, "1");
+            count("visitors-" + today);
+          }
+        } catch (e) {
+        }
+      }
+
+      if (!document.visibilityState || document.visibilityState === "visible") {
+        recordVisit();
+        return;
+      }
+
+      document.addEventListener("visibilitychange", function onVisible() {
+        if (document.visibilityState !== "visible") return;
+        document.removeEventListener("visibilitychange", onVisible);
+        recordVisit();
+      });
     })();
   </script>
 </head>
